@@ -14,6 +14,7 @@ class Conta:
     def nova_conta(self,cliente:Cliente,numero:int):
         self._cliente = cliente
         self._numero = numero
+        return self
     def saldo(self) -> float:
         return self._saldo
     def sacar(self,valor:float) -> bool:
