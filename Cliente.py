@@ -1,14 +1,14 @@
-from datetime import date
-from Conta import Conta
+
 from PessoaFisica import PessoaFisica
-from Transacao import Transacao
 
 class Cliente(PessoaFisica):
     def __init__(self,contas:list,**dados):
-        super(dados).__init__
-        self._endereco = dados["endereco"]
+        super().__init__(**dados)
+        self._endereco = dados['endereco']
         self._contas = contas
-    def realizar_transacao(conta:Conta,transacao:Transacao) -> bool:
-        pass
-    def adicionar_conta(conta:Conta):
-        pass
+    def realizar_transacao(self,conta,transacao) -> bool:
+        print("Realizando transação ...")
+    def adicionar_conta(self,conta):
+        self._contas.append(conta)
+    def __str__(self) -> str:
+        return f"CPF: {self._cpf}, Data de nascimento {self._datansc}"

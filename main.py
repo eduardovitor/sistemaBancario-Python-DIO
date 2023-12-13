@@ -1,38 +1,15 @@
+from Cliente import Cliente
+from ContaCorrente import ContaCorrente
+
 menu = """
     ====== MENU ======
-    (1) Cadastro de usuário
-    (2) Cadastro de conta
-    (3) Depósito
-    (4) Saque
-    (5) Extrato
-    (6) Sair
+    (1) Criação de conta
+    (2) Depósito
+    (3) Saque
+    (4) Extrato
+    (5) Sair
 
 """
-
-def cadastrar_conta(usuario:dict,num_agencia:str,/,*,num_conta:int,contas:list) -> tuple:
-    conta = {
-        "agência": num_agencia,
-        "número da conta": num_conta,
-        "usuário": usuario,
-        "saldo": 0,
-        "extrato": []
-    }
-    num_conta += 1
-    contas.append(conta)
-    print("Conta criada com sucesso!")
-    return contas,num_conta,conta
-
-
-def cadastrar_usuario(lista_usuarios:list,**usuario) -> list:
-    cadastrado = False
-    for u in lista_usuarios:
-        if u["cpf"] == usuario["cpf"]:
-            print("CPF já cadastrado")
-            cadastrado = True
-            break
-    if not cadastrado:
-        lista_usuarios.append(usuario)
-    return lista_usuarios
 
 def incrementar_qtd_saques(qtd_saques_realizados:int) -> int:
     qtd_saques_realizados+=1
@@ -80,7 +57,7 @@ def imprime_extrato(conta) -> None:
 LIMITE_VALOR_SAQUES = 500
 LIMITE_QTD_SAQUES = 3
 qtd_saques_realizados = 0
-usuarios = []
+clientes = []
 contas = []
 num_agencia = "0001"
 num_conta = 1
@@ -94,15 +71,12 @@ while True:
         datansc = input("Digite a data de nascimento: ")
         cpf = int(input("Digite o CPF: "))
         end = input("Digite o endereço: ")
-        usuarios = cadastrar_usuario(usuarios,nome=nome,datansc=datansc,cpf=cpf,end=end)
+        cliente = Cliente([],nome=nome,cpf=cpf,datansc=datansc,endereco=end)
+        conta = ContaCorrente(cliente,num_conta,LIMITE_VALOR_SAQUES,LIMITE_QTD_SAQUES)
+        cliente.adicionar_conta(conta)
+        num_conta+=1
+        print(cliente)
     elif op == 2:
-        cpf_dig = int(input("Digite o CPF que será associado a conta: "))
-        usuario = [usuario for usuario in usuarios if usuario["cpf"] == cpf_dig]
-        if len(usuario) > 0:
-            contas, num_conta, conta_ativa = cadastrar_conta(usuario[0],num_agencia,num_conta=num_conta,contas=contas)
-        else:
-            print("CPF inválido")
-    elif op == 3:
         if len(conta_ativa) == 0:
             print("Por favor, crie uma conta antes de realizar operações")
         else:
@@ -110,22 +84,22 @@ while True:
             retorno = deposito(valor,conta_ativa,contas)
             if retorno is not None:
                 contas, conta_ativa = retorno
-    elif op == 4:
-         if len(conta_ativa) == 0:
+    elif op == 3:
+        if len(conta_ativa) == 0:
             print("Por favor, crie uma conta antes de realizar operações")
-         else:
+        else:
             valor = float(input("Digite o valor: "))
             retorno = saque(conta=conta_ativa,limite_qtd_saques=LIMITE_QTD_SAQUES,limite_valor_saques=LIMITE_VALOR_SAQUES,valor=valor,qtd_saques_realizados=qtd_saques_realizados, contas=contas)
             if retorno is not None:
                 contas, conta_ativa = retorno
                 qtd_saques_realizados = incrementar_qtd_saques(qtd_saques_realizados)
-    elif op == 5:
+    elif op == 4:
          if len(conta_ativa) == 0:
             print("Por favor, crie uma conta antes de realizar operações")
          else:
             imprime_extrato(conta_ativa)
-    elif op == 6:
+    elif op == 5:
         print("Obrigado por utilizar o sistema! Até mais!")
-        break        
+        break         
     else:
         print("Opção inválida!")

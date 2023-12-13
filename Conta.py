@@ -1,17 +1,17 @@
-
-
-from Cliente import Cliente
 from Historico import Historico
 
 
 class Conta:
     _agencia = "0001"
-    _cliente:Cliente
-    _historico:Historico
-    _saldo:float
-    _numero:int
+    _cliente = {}
+    _historico = []
+    _saldo = 0
+    _numero = 0
+    def __init__(self,cliente,numero):
+        self._cliente = cliente
+        self._numero = numero
     @classmethod
-    def nova_conta(self,cliente:Cliente,numero:int):
+    def nova_conta(self,cliente,numero):
         self._cliente = cliente
         self._numero = numero
         return self
