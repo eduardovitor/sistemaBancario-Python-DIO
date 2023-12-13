@@ -58,10 +58,8 @@ LIMITE_VALOR_SAQUES = 500
 LIMITE_QTD_SAQUES = 3
 qtd_saques_realizados = 0
 clientes = []
-contas = []
-num_agencia = "0001"
 num_conta = 1
-conta_ativa = {}
+cliente_ativo = {}
 
 while True:
     print(menu)
@@ -74,8 +72,9 @@ while True:
         cliente = Cliente([],nome=nome,cpf=cpf,datansc=datansc,endereco=end)
         conta = ContaCorrente(cliente,num_conta,LIMITE_VALOR_SAQUES,LIMITE_QTD_SAQUES)
         cliente.adicionar_conta(conta)
+        clientes.append(cliente)
         num_conta+=1
-        print(cliente)
+        cliente_ativo = cliente
     elif op == 2:
         if len(conta_ativa) == 0:
             print("Por favor, crie uma conta antes de realizar operações")

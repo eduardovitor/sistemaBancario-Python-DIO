@@ -1,4 +1,6 @@
+from Deposito import Deposito
 from Historico import Historico
+from Saque import Saque
 
 
 class Conta:
@@ -18,7 +20,21 @@ class Conta:
     def saldo(self) -> float:
         return self._saldo
     def sacar(self,valor:float) -> bool:
-        pass
+        if valor < 0:
+            print("Valores de saque negativos não são permitidos")
+            return False
+        else:
+            self._saldo -= valor
+            saque = Saque(valor)
+            saque.registrar(self)
+            return True
     def depositar(self,valor:float) -> bool:
-        pass
+        if valor <= 0:
+            print("Não é possível depositar valores nulos ou negativos")
+            return False
+        else:
+            deposito = Deposito(valor)
+            self._saldo += valor
+            deposito.registrar(self)
+            return True
     
