@@ -37,4 +37,12 @@ class Conta:
             self._saldo += valor
             deposito.registrar(self)
             return True
-    
+    @property
+    def historico(self):
+        return self._historico
+    def atualizar_historico(self,historico_atualizado):
+        self._historico = historico_atualizado
+    def imprimir_historico(self):
+        for op in self._historico:
+            print(op)
+        print(f"Saldo: {self._saldo}")

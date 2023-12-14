@@ -15,51 +15,11 @@ def incrementar_qtd_saques(qtd_saques_realizados:int) -> int:
     qtd_saques_realizados+=1
     return qtd_saques_realizados
 
-def saque(*,limite_qtd_saques:int,limite_valor_saques:int,valor:float,qtd_saques_realizados:int,conta:dict,contas:list) -> tuple:
-    if qtd_saques_realizados == limite_qtd_saques:
-            print(f"Você não pode mais realizar saques, pois já atingiu o limite mensal de {limite_qtd_saques}")
-    else:
-        if valor > limite_valor_saques:
-            print(f"Saques que ultrapassem R$ {limite_valor_saques:.2f} não são permitidos")
-        elif valor < 0:
-            print("Valores de saque negativos não são permitidos")
-        else:
-            conta["saldo"] -= valor
-            conta["extrato"].append({
-                "valor": valor,
-                "tipo": "Saque"
-            })
-            for i,c in enumerate(contas):
-                if c["número da conta"] == conta["número da conta"]:
-                    contas[i] = conta            
-        return contas,conta
-
-def deposito(valor:float,conta:dict,contas:list) -> tuple:
-    if valor <= 0:
-        print("Não é possível depositar valores nulos ou negativos")
-    else:
-        conta["saldo"] += valor
-        conta["extrato"].append({
-            "valor": valor,
-            "tipo": "Depósito"
-        })
-        for i,c in enumerate(contas):
-            if c["número da conta"] == conta["número da conta"]:
-                contas[i] = conta
-    print("Depósito realizado com sucesso!")
-    return contas,conta
-
-def imprime_extrato(conta) -> None:
-    for registro in conta["extrato"]:
-            print(f"{registro['tipo']}, valor: R$ {registro['valor']:.2f}")
-    print(f"O saldo é de R$ {conta['saldo']:.2f}")
-
 LIMITE_VALOR_SAQUES = 500
 LIMITE_QTD_SAQUES = 3
 qtd_saques_realizados = 0
 clientes = []
 num_conta = 1
-cliente_ativo = {}
 
 while True:
     print(menu)
@@ -74,29 +34,26 @@ while True:
         cliente.adicionar_conta(conta)
         clientes.append(cliente)
         num_conta+=1
-        cliente_ativo = cliente
     elif op == 2:
-        if len(conta_ativa) == 0:
+        if not isinstance(conta,ContaCorrente):
             print("Por favor, crie uma conta antes de realizar operações")
         else:
             valor = float(input("Digite o valor: "))
-            retorno = deposito(valor,conta_ativa,contas)
-            if retorno is not None:
-                contas, conta_ativa = retorno
+            res = conta.depositar(valor)
+            print(f"Depósito realizado com sucesso!" if res else f"Depósito mal-sucedido")
     elif op == 3:
-        if len(conta_ativa) == 0:
+        if not isinstance(conta,ContaCorrente):
             print("Por favor, crie uma conta antes de realizar operações")
         else:
             valor = float(input("Digite o valor: "))
-            retorno = saque(conta=conta_ativa,limite_qtd_saques=LIMITE_QTD_SAQUES,limite_valor_saques=LIMITE_VALOR_SAQUES,valor=valor,qtd_saques_realizados=qtd_saques_realizados, contas=contas)
-            if retorno is not None:
-                contas, conta_ativa = retorno
-                qtd_saques_realizados = incrementar_qtd_saques(qtd_saques_realizados)
+            res = conta.sacar(valor,qtd_saques_realizados)
+            print(f"Saque realizado com sucesso!" if res else f"Saque mal-sucedido")
+            qtd_saques_realizados = incrementar_qtd_saques(qtd_saques_realizados)
     elif op == 4:
-         if len(conta_ativa) == 0:
+         if not isinstance(conta,ContaCorrente):
             print("Por favor, crie uma conta antes de realizar operações")
          else:
-            imprime_extrato(conta_ativa)
+            conta.imprimir_historico()
     elif op == 5:
         print("Obrigado por utilizar o sistema! Até mais!")
         break         
